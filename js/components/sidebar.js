@@ -13,7 +13,7 @@ class SidebarManager {
         const sidebarContainer = document.getElementById('sidebar-container');
         if (!sidebarContainer) return;
         
-        fetch('components/sidebar.html')
+        fetch('/AI_SCMS/components/sidebar.html')
             .then(response => response.text())
             .then(html => {
                 sidebarContainer.innerHTML = html;
@@ -64,7 +64,7 @@ class SidebarManager {
     
     logout() {
         localStorage.removeItem('isLoggedIn');
-        window.location.href = '../index.html';
+        window.location.href = '/AI_SCMS/index.html';
     }
     
     createFallbackSidebar() {
@@ -82,27 +82,27 @@ class SidebarManager {
                 
                 <ul class="sidebar-menu">
                     <li>
-                        <a href="../dashboard.html" class="sidebar-link ${currentPage === 'dashboard.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/dashboard.html" class="sidebar-link ${currentPage === 'dashboard.html' ? 'active' : ''}">
                             <i>📊</i> Dashboard
                         </a>
                     </li>
                     <li>
-                        <a href="../pages/inventory.html" class="sidebar-link ${currentPage === 'inventory.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/pages/inventory.html" class="sidebar-link ${currentPage === 'inventory.html' ? 'active' : ''}">
                             <i>📦</i> Inventory
                         </a>
                     </li>
                     <li>
-                        <a href="../pages/procurement.html" class="sidebar-link ${currentPage === 'procurement.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/pages/procurement.html" class="sidebar-link ${currentPage === 'procurement.html' ? 'active' : ''}">
                             <i>🛒</i> Procurement
                         </a>
                     </li>
                     <li>
-                        <a href="../pages/cost-management.html" class="sidebar-link ${currentPage === 'cost-management.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/pages/cost-management.html" class="sidebar-link ${currentPage === 'cost-management.html' ? 'active' : ''}">
                             <i>💰</i> Cost Management
                         </a>
                     </li>
                     <li>
-                        <a href="../pages/order-management.html" class="sidebar-link ${currentPage === 'order-management.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/pages/order-management.html" class="sidebar-link ${currentPage === 'order-management.html' ? 'active' : ''}">
                             <i>📋</i> Order Management
                         </a>
                     </li>
