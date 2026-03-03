@@ -1,0 +1,289 @@
+{
+  "inventory": [
+    {
+      "id": 1001,
+      "sku": "LAP-DELL-001",
+      "name": "Dell XPS 15 Laptop",
+      "category": "Electronics",
+      "quantity": 45,
+      "price": 1299.99,
+      "cost": 1100.00,
+      "location": "Warehouse A - Section 1, Rack 3",
+      "reorderLevel": 10,
+      "reorderQuantity": 15,
+      "supplierId": 2001,
+      "lastUpdated": "2024-01-15",
+      "status": "active",
+      "dimensions": {
+        "weight": 2.5,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1002,
+      "sku": "LAP-HP-002",
+      "name": "HP EliteBook 840",
+      "category": "Electronics",
+      "quantity": 32,
+      "price": 1149.99,
+      "cost": 975.00,
+      "location": "Warehouse A - Section 1, Rack 4",
+      "reorderLevel": 8,
+      "reorderQuantity": 12,
+      "supplierId": 2001,
+      "lastUpdated": "2024-01-14",
+      "status": "active",
+      "dimensions": {
+        "weight": 2.1,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1003,
+      "sku": "MON-SAM-003",
+      "name": "Samsung 27\" 4K Monitor",
+      "category": "Electronics",
+      "quantity": 28,
+      "price": 399.99,
+      "cost": 320.00,
+      "location": "Warehouse A - Section 2, Rack 1",
+      "reorderLevel": 6,
+      "reorderQuantity": 10,
+      "supplierId": 2003,
+      "lastUpdated": "2024-01-13",
+      "status": "active",
+      "dimensions": {
+        "weight": 5.2,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1004,
+      "sku": "MON-LG-004",
+      "name": "LG UltraWide 34\" Monitor",
+      "category": "Electronics",
+      "quantity": 15,
+      "price": 499.99,
+      "cost": 410.00,
+      "location": "Warehouse A - Section 2, Rack 2",
+      "reorderLevel": 4,
+      "reorderQuantity": 8,
+      "supplierId": 2003,
+      "lastUpdated": "2024-01-12",
+      "status": "active",
+      "dimensions": {
+        "weight": 6.8,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1005,
+      "sku": "CHA-ERG-005",
+      "name": "Herman Miller Aeron Chair",
+      "category": "Furniture",
+      "quantity": 23,
+      "price": 1299.99,
+      "cost": 950.00,
+      "location": "Warehouse B - Section 1, Rack 1",
+      "reorderLevel": 5,
+      "reorderQuantity": 8,
+      "supplierId": 2004,
+      "lastUpdated": "2024-01-14",
+      "status": "active",
+      "dimensions": {
+        "weight": 22.5,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1006,
+      "sku": "CHA-OFF-006",
+      "name": "Steelcase Office Chair",
+      "category": "Furniture",
+      "quantity": 35,
+      "price": 599.99,
+      "cost": 450.00,
+      "location": "Warehouse B - Section 1, Rack 2",
+      "reorderLevel": 8,
+      "reorderQuantity": 12,
+      "supplierId": 2004,
+      "lastUpdated": "2024-01-13",
+      "status": "active",
+      "dimensions": {
+        "weight": 18.3,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1007,
+      "sku": "DES-STD-007",
+      "name": "Standing Desk Electric",
+      "category": "Furniture",
+      "quantity": 12,
+      "price": 799.99,
+      "cost": 620.00,
+      "location": "Warehouse B - Section 2, Rack 1",
+      "reorderLevel": 4,
+      "reorderQuantity": 6,
+      "supplierId": 2004,
+      "lastUpdated": "2024-01-11",
+      "status": "active",
+      "dimensions": {
+        "weight": 35.0,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1008,
+      "sku": "PAP-A4-008",
+      "name": "Printer Paper A4 (Case of 10 reams)",
+      "category": "Office Supplies",
+      "quantity": 150,
+      "price": 45.99,
+      "cost": 38.50,
+      "location": "Warehouse C - Section 1, Rack 1",
+      "reorderLevel": 30,
+      "reorderQuantity": 50,
+      "supplierId": 2005,
+      "lastUpdated": "2024-01-13",
+      "status": "active",
+      "dimensions": {
+        "weight": 12.5,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1009,
+      "sku": "PEN-BIC-009",
+      "name": "BIC Ballpoint Pens (Box of 50)",
+      "category": "Office Supplies",
+      "quantity": 200,
+      "price": 12.99,
+      "cost": 8.75,
+      "location": "Warehouse C - Section 1, Rack 2",
+      "reorderLevel": 50,
+      "reorderQuantity": 100,
+      "supplierId": 2005,
+      "lastUpdated": "2024-01-12",
+      "status": "active",
+      "dimensions": {
+        "weight": 2.3,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1010,
+      "sku": "MOU-LOG-010",
+      "name": "Logitech MX Master 3 Mouse",
+      "category": "Electronics",
+      "quantity": 8,
+      "price": 99.99,
+      "cost": 75.00,
+      "location": "Warehouse A - Section 3, Rack 1",
+      "reorderLevel": 15,
+      "reorderQuantity": 20,
+      "supplierId": 2002,
+      "lastUpdated": "2024-01-15",
+      "status": "active",
+      "dimensions": {
+        "weight": 0.5,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1011,
+      "sku": "KEY-LOG-011",
+      "name": "Logitech MX Keys Keyboard",
+      "category": "Electronics",
+      "quantity": 6,
+      "price": 119.99,
+      "cost": 90.00,
+      "location": "Warehouse A - Section 3, Rack 2",
+      "reorderLevel": 10,
+      "reorderQuantity": 15,
+      "supplierId": 2002,
+      "lastUpdated": "2024-01-15",
+      "status": "low-stock",
+      "dimensions": {
+        "weight": 0.8,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1012,
+      "sku": "CAB-HD-012",
+      "name": "HDMI Cable 2m",
+      "category": "Electronics",
+      "quantity": 85,
+      "price": 9.99,
+      "cost": 6.50,
+      "location": "Warehouse A - Section 4, Rack 1",
+      "reorderLevel": 25,
+      "reorderQuantity": 50,
+      "supplierId": 2002,
+      "lastUpdated": "2024-01-14",
+      "status": "active",
+      "dimensions": {
+        "weight": 0.2,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1013,
+      "sku": "CAB-USB-013",
+      "name": "USB-C Cable 2m",
+      "category": "Electronics",
+      "quantity": 92,
+      "price": 12.99,
+      "cost": 8.25,
+      "location": "Warehouse A - Section 4, Rack 2",
+      "reorderLevel": 30,
+      "reorderQuantity": 60,
+      "supplierId": 2002,
+      "lastUpdated": "2024-01-14",
+      "status": "active",
+      "dimensions": {
+        "weight": 0.15,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1014,
+      "sku": "FIL-BOX-014",
+      "name": "File Storage Box (Pack of 5)",
+      "category": "Office Supplies",
+      "quantity": 45,
+      "price": 34.99,
+      "cost": 25.00,
+      "location": "Warehouse C - Section 2, Rack 1",
+      "reorderLevel": 15,
+      "reorderQuantity": 25,
+      "supplierId": 2005,
+      "lastUpdated": "2024-01-13",
+      "status": "active",
+      "dimensions": {
+        "weight": 8.5,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": 1015,
+      "sku": "LAM-LAM-015",
+      "name": "Laminator A3",
+      "category": "Office Equipment",
+      "quantity": 7,
+      "price": 89.99,
+      "cost": 65.00,
+      "location": "Warehouse C - Section 3, Rack 1",
+      "reorderLevel": 3,
+      "reorderQuantity": 5,
+      "supplierId": 2006,
+      "lastUpdated": "2024-01-12",
+      "status": "low-stock",
+      "dimensions": {
+        "weight": 3.2,
+        "unit": "kg"
+      }
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "suppliers": [
+    {
+      "id": 2001,
+      "name": "Tech Distributors Inc",
+      "type": "Electronics",
+      "contact": {
+        "primary": "John Smith",
+        "email": "john.smith@techdist.com",
+        "phone": "+1-555-0123",
+        "secondary": "jane.doe@techdist.com",
+        "secondaryPhone": "+1-555-0124"
+      },
+      "address": {
+        "street": "100 Tech Blvd",
+        "city": "Silicon Valley",
+        "state": "CA",
+        "zipCode": "94001",
+        "country": "USA"
+      },
+      "paymentTerms": "Net 30",
+      "creditLimit": 100000,
+      "rating": 4.8,
+      "categories": ["Laptops", "Desktops", "Servers"],
+      "leadTime": 3,
+      "minimumOrder": 1000,
+      "status": "active",
+      "since": "2020-01-15"
+    },
+    {
+      "id": 2002,
+      "name": "Logitech Direct",
+      "type": "Peripherals",
+      "contact": {
+        "primary": "Sarah Johnson",
+        "email": "sarah.j@logitech.com",
+        "phone": "+1-555-0134"
+      },
+      "address": {
+        "street": "200 Peripheral Way",
+        "city": "Newark",
+        "state": "CA",
+        "zipCode": "94501",
+        "country": "USA"
+      },
+      "paymentTerms": "Net 30",
+      "creditLimit": 50000,
+      "rating": 4.9,
+      "categories": ["Mice", "Keyboards", "Webcams", "Headsets"],
+      "leadTime": 2,
+      "minimumOrder": 500,
+      "status": "active",
+      "since": "2021-03-20"
+    },
+    {
+      "id": 2003,
+      "name": "Samsung Electronics",
+      "type": "Electronics",
+      "contact": {
+        "primary": "Mike Chen",
+        "email": "mike.chen@samsung.com",
+        "phone": "+1-555-0145"
+      },
+      "address": {
+        "street": "300 Display Drive",
+        "city": "Ridgefield Park",
+        "state": "NJ",
+        "zipCode": "07601",
+        "country": "USA"
+      },
+      "paymentTerms": "Net 45",
+      "creditLimit": 150000,
+      "rating": 4.7,
+      "categories": ["Monitors", "SSDs", "Memory"],
+      "leadTime": 5,
+      "minimumOrder": 2000,
+      "status": "active",
+      "since": "2019-11-10"
+    },
+    {
+      "id": 2004,
+      "name": "Office Furniture Co",
+      "type": "Furniture",
+      "contact": {
+        "primary": "Lisa Brown",
+        "email": "lisa@officefurniture.com",
+        "phone": "+1-555-0156"
+      },
+      "address": {
+        "street": "400 Furniture Ave",
+        "city": "Chicago",
+        "state": "IL",
+        "zipCode": "60601",
+        "country": "USA"
+      },
+      "paymentTerms": "Net 30",
+      "creditLimit": 75000,
+      "rating": 4.5,
+      "categories": ["Chairs", "Desks", "Cabinets", "Tables"],
+      "leadTime": 7,
+      "minimumOrder": 1000,
+      "status": "active",
+      "since": "2020-06-15"
+    },
+    {
+      "id": 2005,
+      "name": "Office Depot",
+      "type": "Office Supplies",
+      "contact": {
+        "primary": "Tom Wilson",
+        "email": "tom.wilson@officedepot.com",
+        "phone": "+1-555-0167"
+      },
+      "address": {
+        "street": "500 Supply St",
+        "city": "Dallas",
+        "state": "TX",
+        "zipCode": "75201",
+        "country": "USA"
+      },
+      "paymentTerms": "Net 15",
+      "creditLimit": 25000,
+      "rating": 4.3,
+      "categories": ["Paper", "Pens", "Filing", "Stationery"],
+      "leadTime": 2,
+      "minimumOrder": 250,
+      "status": "active",
+      "since": "2021-01-05"
+    },
+    {
+      "id": 2006,
+      "name": "Office Equipment Supply",
+      "type": "Equipment",
+      "contact": {
+        "primary": "Robert Lee",
+        "email": "rlee@offequip.com",
+        "phone": "+1-555-0178"
+      },
+      "address": {
+        "street": "600 Equipment Rd",
+        "city": "Atlanta",
+        "state": "GA",
+        "zipCode": "30301",
+        "country": "USA"
+      },
+      "paymentTerms": "Net 30",
+      "creditLimit": 30000,
+      "rating": 4.2,
+      "categories": ["Laminators", "Shredders", "Binders", "Printers"],
+      "leadTime": 4,
+      "minimumOrder": 500,
+      "status": "active",
+      "since": "2022-02-10"
+    },
+    {
+      "id": 2007,
+      "name": "Fast Delivery Co",
+      "type": "Logistics",
+      "contact": {
+        "primary": "David Miller",
+        "email": "dmiller@fastdelivery.com",
+        "phone": "+1-555-0189"
+      },
+      "address": {
+        "street": "700 Logistics Park",
+        "city": "Memphis",
+        "state": "TN",
+        "zipCode": "38101",
+        "country": "USA"
+      },
+      "paymentTerms": "Net 15",
+      "creditLimit": 50000,
+      "rating": 4.6,
+      "services": ["Ground Shipping", "Express Shipping", "Freight"],
+      "leadTime": 1,
+      "minimumOrder": 0,
+      "status": "active",
+      "since": "2020-09-01"
+    }
+  ]
+}

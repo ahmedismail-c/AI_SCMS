@@ -1,0 +1,265 @@
+{
+  "orders": [
+    {
+      "id": 5001,
+      "orderNumber": "ORD-2024-001",
+      "customer": {
+        "id": 6001,
+        "name": "ABC Corporation",
+        "email": "orders@abccorp.com",
+        "phone": "+1-555-0101"
+      },
+      "items": [
+        {
+          "sku": "LAP-DELL-001",
+          "name": "Dell XPS 15 Laptop",
+          "quantity": 2,
+          "price": 1299.99,
+          "total": 2599.98
+        },
+        {
+          "sku": "MOU-LOG-010",
+          "name": "Logitech MX Master 3 Mouse",
+          "quantity": 2,
+          "price": 99.99,
+          "total": 199.98
+        }
+      ],
+      "subtotal": 2799.96,
+      "tax": 223.99,
+      "shippingCost": 25.00,
+      "totalAmount": 3048.95,
+      "status": "processing",
+      "paymentStatus": "paid",
+      "paymentMethod": "Credit Card",
+      "orderDate": "2024-01-15",
+      "shippingAddress": {
+        "street": "123 Business Ave",
+        "city": "New York",
+        "state": "NY",
+        "zipCode": "10001",
+        "country": "USA"
+      },
+      "shippingMethod": "Express",
+      "trackingNumber": "TRK123456789",
+      "notes": "Priority handling requested"
+    },
+    {
+      "id": 5002,
+      "orderNumber": "ORD-2024-002",
+      "customer": {
+        "id": 6002,
+        "name": "XYZ Ltd",
+        "email": "purchasing@xyz.com",
+        "phone": "+1-555-0102"
+      },
+      "items": [
+        {
+          "sku": "CHA-ERG-005",
+          "name": "Herman Miller Aeron Chair",
+          "quantity": 5,
+          "price": 1299.99,
+          "total": 6499.95
+        }
+      ],
+      "subtotal": 6499.95,
+      "tax": 519.99,
+      "shippingCost": 75.00,
+      "totalAmount": 7094.94,
+      "status": "shipped",
+      "paymentStatus": "paid",
+      "paymentMethod": "Bank Transfer",
+      "orderDate": "2024-01-14",
+      "shippingAddress": {
+        "street": "456 Industrial Blvd",
+        "city": "Boston",
+        "state": "MA",
+        "zipCode": "02101",
+        "country": "USA"
+      },
+      "shippingMethod": "Freight",
+      "trackingNumber": "FRT987654321",
+      "estimatedDelivery": "2024-01-20"
+    },
+    {
+      "id": 5003,
+      "orderNumber": "ORD-2024-003",
+      "customer": {
+        "id": 6003,
+        "name": "123 Industries",
+        "email": "orders@123ind.com",
+        "phone": "+1-555-0103"
+      },
+      "items": [
+        {
+          "sku": "PAP-A4-008",
+          "name": "Printer Paper A4 (Case)",
+          "quantity": 20,
+          "price": 45.99,
+          "total": 919.80
+        },
+        {
+          "sku": "PEN-BIC-009",
+          "name": "BIC Ballpoint Pens (Box)",
+          "quantity": 30,
+          "price": 12.99,
+          "total": 389.70
+        },
+        {
+          "sku": "FIL-BOX-014",
+          "name": "File Storage Box (Pack)",
+          "quantity": 10,
+          "price": 34.99,
+          "total": 349.90
+        }
+      ],
+      "subtotal": 1659.40,
+      "tax": 132.75,
+      "shippingCost": 15.00,
+      "totalAmount": 1807.15,
+      "status": "delivered",
+      "paymentStatus": "paid",
+      "paymentMethod": "Credit Card",
+      "orderDate": "2024-01-12",
+      "shippingAddress": {
+        "street": "789 Commerce St",
+        "city": "Chicago",
+        "state": "IL",
+        "zipCode": "60601",
+        "country": "USA"
+      },
+      "shippingMethod": "Standard",
+      "trackingNumber": "STD456789123",
+      "deliveryDate": "2024-01-16"
+    },
+    {
+      "id": 5004,
+      "orderNumber": "ORD-2024-004",
+      "customer": {
+        "id": 6004,
+        "name": "Tech Startups Inc",
+        "email": "procurement@techstart.com",
+        "phone": "+1-555-0104"
+      },
+      "items": [
+        {
+          "sku": "MOU-LOG-010",
+          "name": "Logitech MX Master 3 Mouse",
+          "quantity": 15,
+          "price": 99.99,
+          "total": 1499.85
+        },
+        {
+          "sku": "KEY-LOG-011",
+          "name": "Logitech MX Keys Keyboard",
+          "quantity": 10,
+          "price": 119.99,
+          "total": 1199.90
+        },
+        {
+          "sku": "CAB-HD-012",
+          "name": "HDMI Cable 2m",
+          "quantity": 30,
+          "price": 9.99,
+          "total": 299.70
+        }
+      ],
+      "subtotal": 2999.45,
+      "tax": 239.96,
+      "shippingCost": 25.00,
+      "totalAmount": 3264.41,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "paymentMethod": "Credit Card",
+      "orderDate": "2024-01-15",
+      "shippingAddress": {
+        "street": "321 Innovation Way",
+        "city": "San Francisco",
+        "state": "CA",
+        "zipCode": "94105",
+        "country": "USA"
+      },
+      "shippingMethod": "Express",
+      "notes": "New office setup - urgent"
+    },
+    {
+      "id": 5005,
+      "orderNumber": "ORD-2024-005",
+      "customer": {
+        "id": 6005,
+        "name": "Healthcare Plus",
+        "email": "supplychain@healthplus.com",
+        "phone": "+1-555-0105"
+      },
+      "items": [
+        {
+          "sku": "MON-SAM-003",
+          "name": "Samsung 27\" 4K Monitor",
+          "quantity": 8,
+          "price": 399.99,
+          "total": 3199.92
+        },
+        {
+          "sku": "DES-STD-007",
+          "name": "Standing Desk Electric",
+          "quantity": 4,
+          "price": 799.99,
+          "total": 3199.96
+        }
+      ],
+      "subtotal": 6399.88,
+      "tax": 511.99,
+      "shippingCost": 95.00,
+      "totalAmount": 7006.87,
+      "status": "processing",
+      "paymentStatus": "paid",
+      "paymentMethod": "Bank Transfer",
+      "orderDate": "2024-01-13",
+      "shippingAddress": {
+        "street": "555 Medical Center Dr",
+        "city": "Houston",
+        "state": "TX",
+        "zipCode": "77001",
+        "country": "USA"
+      },
+      "shippingMethod": "Freight",
+      "trackingNumber": "FRT123456789"
+    },
+    {
+      "id": 5006,
+      "orderNumber": "ORD-2024-006",
+      "customer": {
+        "id": 6006,
+        "name": "Education First",
+        "email": "purchasing@edfirst.edu",
+        "phone": "+1-555-0106"
+      },
+      "items": [
+        {
+          "sku": "LAP-HP-002",
+          "name": "HP EliteBook 840",
+          "quantity": 12,
+          "price": 1149.99,
+          "total": 13799.88
+        }
+      ],
+      "subtotal": 13799.88,
+      "tax": 1103.99,
+      "shippingCost": 45.00,
+      "totalAmount": 14948.87,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "paymentMethod": "Purchase Order",
+      "orderDate": "2024-01-15",
+      "shippingAddress": {
+        "street": "888 University Ave",
+        "city": "Austin",
+        "state": "TX",
+        "zipCode": "78701",
+        "country": "USA"
+      },
+      "shippingMethod": "Standard",
+      "notes": "Educational discount applied"
+    }
+  ]
+}

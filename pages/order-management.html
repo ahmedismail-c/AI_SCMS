@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - Supply Chain Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="top-header">
+                <div class="header-title">
+                    <h2>Order Management</h2>
+                    <p>Manage customer orders and shipments</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openAddOrderModal()">
+                        + New Order
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Order Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon orders">📋</div>
+                    <div class="stat-details">
+                        <h4>Total Orders</h4>
+                        <p class="stat-number" id="total-orders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orders" style="background: #f39c12;">⏳</div>
+                    <div class="stat-details">
+                        <h4>Pending</h4>
+                        <p class="stat-number" id="pending-orders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orders" style="background: #3498db;">📦</div>
+                    <div class="stat-details">
+                        <h4>Processing</h4>
+                        <p class="stat-number" id="processing-orders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orders" style="background: #27ae60;">✅</div>
+                    <div class="stat-details">
+                        <h4>Delivered</h4>
+                        <p class="stat-number" id="delivered-orders">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filters -->
+            <div class="card">
+                <div class="filter-group">
+                    <input type="text" id="searchInput" class="form-control" 
+                           placeholder="Search by Order # or Customer...">
+                    <select id="statusFilter" class="form-control">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <select id="paymentFilter" class="form-control">
+                        <option value="">All Payments</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Orders Table -->
+            <div class="card">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Order Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Order Modal -->
+    <div id="addOrderModal" class="modal">
+        <div class="modal-content" style="width: 700px;">
+            <div class="modal-header">
+                <h2>Create New Order</h2>
+                <button class="close-btn" onclick="closeModal('addOrderModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addOrderForm">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="order-customer" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Shipping Address</label>
+                        <textarea id="order-address" class="form-control" rows="2" required></textarea>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4>Order Items</h4>
+                        <div id="order-items-container">
+                            <!-- Dynamic items will be added here -->
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addOrderItemRow()">
+                            + Add Item
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Payment Status</label>
+                        <select id="order-paymentStatus" class="form-control" required>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveOrder()">Create Order</button>
+                <button class="btn" onclick="closeModal('addOrderModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Update Order Status Modal -->
+    <div id="updateStatusModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Order Status</h2>
+                <button class="close-btn" onclick="closeModal('updateStatusModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="update-order-id">
+                <div class="form-group">
+                    <label>New Status</label>
+                    <select id="new-order-status" class="form-control">
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="tracking-group" style="display: none;">
+                    <label>Tracking Number</label>
+                    <input type="text" id="tracking-number" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="updateOrderStatus()">Update</button>
+                <button class="btn" onclick="closeModal('updateStatusModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <!-- Order Details Modal -->
+<div id="orderDetailsModal" class="modal">
+    <div class="modal-content" style="width: 600px; max-width: 90%;">
+        <div class="modal-header">
+            <h2>Order Details</h2>
+            <button class="close-btn" onclick="closeModal('orderDetailsModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="order-details-content">
+            <!-- Populated by JavaScript -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="closeModal('orderDetailsModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script>
+        let currentOrders = [];
+        
+        // Load sidebar
+        fetch('../components/sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+            });
+        
+        // Load orders data
+        function loadOrders() {
+            currentOrders = Storage.getData('orders');
+            renderOrdersTable(currentOrders);
+            updateOrderStats();
+        }
+        
+// Render orders table
+function renderOrdersTable(orders) {
+    const tbody = document.getElementById('orders-tbody');
+    
+    if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No orders found</td></tr>';
+        return;
+    }
+    
+    // Sort by date descending
+    orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+    
+    tbody.innerHTML = orders.map(order => {
+        // Handle customer - could be string or object
+        let customerName = '';
+        if (typeof order.customer === 'object' && order.customer !== null) {
+            customerName = order.customer.name || 'Unknown';
+        } else {
+            customerName = order.customer || 'Unknown';
+        }
+        
+        // Handle items count
+        const itemCount = order.items ? order.items.length : 0;
+        
+        // Handle total amount
+        const totalAmount = order.totalAmount || order.subtotal || 0;
+        
+        return `
+            <tr>
+                <td>${order.orderNumber || 'N/A'}</td>
+                <td>${customerName}</td>
+                <td>${itemCount} item(s)</td>
+                <td>$${totalAmount.toFixed(2)}</td>
+                <td><span class="badge badge-${getStatusBadge(order.status)}">${order.status || 'pending'}</span></td>
+                <td><span class="badge badge-${getPaymentBadge(order.paymentStatus)}">${order.paymentStatus || 'pending'}</span></td>
+                <td>${order.orderDate || 'N/A'}</td>
+                <td>
+                    <button class="btn btn-info btn-sm" onclick="viewOrder(${order.id})">View</button>
+                    <button class="btn btn-warning btn-sm" onclick="openUpdateStatus(${order.id}, '${order.status}')">Update</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}        
+        // Update order stats
+        function updateOrderStats() {
+            const total = currentOrders.length;
+            const pending = currentOrders.filter(o => o.status === 'pending').length;
+            const processing = currentOrders.filter(o => o.status === 'processing').length;
+            const delivered = currentOrders.filter(o => o.status === 'delivered').length;
+            
+            document.getElementById('total-orders').textContent = total;
+            document.getElementById('pending-orders').textContent = pending;
+            document.getElementById('processing-orders').textContent = processing;
+            document.getElementById('delivered-orders').textContent = delivered;
+        }
+        
+        // Add item row to order form
+        function addOrderItemRow() {
+            const container = document.getElementById('order-items-container');
+            const inventory = Storage.getData('inventory');
+            
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.style.display = 'flex';
+            row.style.gap = '10px';
+            row.style.marginBottom = '10px';
+            row.innerHTML = `
+                <select class="form-control item-sku" style="flex: 2;" onchange="updateOrderItemPrice(this)">
+                    <option value="">Select Item</option>
+                    ${inventory.map(item => `<option value="${item.sku}" data-price="${item.price}" data-name="${item.name}">${item.sku} - ${item.name} (Stock: ${item.quantity})</option>`).join('')}
+                </select>
+                <input type="number" class="form-control item-quantity" placeholder="Qty" style="flex: 1;" min="1" value="1" onchange="validateStock(this)">
+                <input type="number" class="form-control item-price" placeholder="Price" style="flex: 1;" step="0.01" readonly>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.appendChild(row);
+        }
+        
+        // Update item price when SKU is selected
+        window.updateOrderItemPrice = function(select) {
+            const selected = select.options[select.selectedIndex];
+            const price = selected.dataset.price;
+            const priceInput = select.parentElement.querySelector('.item-price');
+            if (price) {
+                priceInput.value = price;
+            }
+        };
+        
+        // Validate stock availability
+        window.validateStock = function(input) {
+            const row = input.closest('.item-row');
+            const skuSelect = row.querySelector('.item-sku');
+            const selected = skuSelect.options[skuSelect.selectedIndex];
+            const stock = selected.text.match(/Stock: (\d+)/);
+            
+            if (stock && parseInt(input.value) > parseInt(stock[1])) {
+                alert('Insufficient stock! Available: ' + stock[1]);
+                input.value = stock[1];
+            }
+        };
+        
+        // Save new order
+        function saveOrder() {
+            const customer = document.getElementById('order-customer').value;
+            const address = document.getElementById('order-address').value;
+            const paymentStatus = document.getElementById('order-paymentStatus').value;
+            
+            // Get items
+            const items = [];
+            const itemRows = document.querySelectorAll('#order-items-container .item-row');
+            let totalAmount = 0;
+            
+            itemRows.forEach(row => {
+                const skuSelect = row.querySelector('.item-sku');
+                const sku = skuSelect.value;
+                const quantity = parseInt(row.querySelector('.item-quantity').value);
+                const price = parseFloat(row.querySelector('.item-price').value);
+                const selectedOption = skuSelect.options[skuSelect.selectedIndex];
+                const name = selectedOption ? selectedOption.dataset.name : '';
+                
+                if (sku && quantity && price) {
+                    items.push({
+                        sku: sku,
+                        name: name,
+                        quantity: quantity,
+                        price: price
+                    });
+                    
+                    totalAmount += quantity * price;
+                    
+                    // Update inventory
+                    const inventory = Storage.getData('inventory');
+                    const inventoryItem = inventory.find(i => i.sku === sku);
+                    if (inventoryItem) {
+                        inventoryItem.quantity -= quantity;
+                        Storage.updateItem('inventory', inventoryItem.id, inventoryItem);
+                    }
+                }
+            });
+            
+            if (items.length === 0) {
+                alert('Please add at least one item');
+                return;
+            }
+            
+            const newOrder = {
+                orderNumber: 'ORD-' + Date.now(),
+                customer: customer,
+                items: items,
+                totalAmount: totalAmount,
+                status: 'pending',
+                paymentStatus: paymentStatus,
+                orderDate: new Date().toISOString().split('T')[0],
+                shippingAddress: address
+            };
+            
+            Storage.addItem('orders', newOrder);
+            
+            // Add revenue to costs (negative amount for revenue)
+            if (paymentStatus === 'paid') {
+                const revenue = {
+                    category: 'Revenue',
+                    amount: -totalAmount,
+                    date: new Date().toISOString().split('T')[0],
+                    description: `Order ${newOrder.orderNumber}`,
+                    supplier: customer
+                };
+                Storage.addItem('costs', revenue);
+            }
+            
+            closeModal('addOrderModal');
+            loadOrders();
+            
+            // Reset form
+            document.getElementById('addOrderForm').reset();
+            document.getElementById('order-items-container').innerHTML = '';
+        }
+        
+// View order details in modal
+function viewOrder(id) {
+    const order = Storage.getItemById('orders', id);
+    if (!order) return;
+    
+    // Format customer info
+    let customerHtml = '';
+    if (typeof order.customer === 'object' && order.customer !== null) {
+        customerHtml = `
+            <div style="margin-bottom: 15px;">
+                <h4>Customer Information</h4>
+                <p><strong>Name:</strong> ${order.customer.name || 'N/A'}</p>
+                <p><strong>Email:</strong> ${order.customer.email || 'N/A'}</p>
+                <p><strong>Phone:</strong> ${order.customer.phone || 'N/A'}</p>
+            </div>
+        `;
+    } else {
+        customerHtml = `
+            <div style="margin-bottom: 15px;">
+                <h4>Customer Information</h4>
+                <p><strong>Name:</strong> ${order.customer || 'N/A'}</p>
+            </div>
+        `;
+    }
+    
+    // Format shipping address
+    let addressHtml = '';
+    if (typeof order.shippingAddress === 'object' && order.shippingAddress !== null) {
+        const addr = order.shippingAddress;
+        addressHtml = `
+            <p>${addr.street || ''}<br>
+            ${addr.city || ''}, ${addr.state || ''} ${addr.zipCode || ''}<br>
+            ${addr.country || ''}</p>
+        `;
+    } else {
+        addressHtml = `<p>${order.shippingAddress || 'N/A'}</p>`;
+    }
+    
+    // Calculate totals if not present
+    const subtotal = order.subtotal || order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const tax = order.tax || subtotal * 0.1; // Assume 10% tax if not specified
+    const shipping = order.shippingCost || 25; // Assume $25 shipping if not specified
+    const total = order.totalAmount || (subtotal + tax + shipping);
+    
+    // Generate items HTML
+    const itemsHtml = order.items.map(item => `
+        <tr>
+            <td>${item.name || item.sku}</td>
+            <td>${item.quantity}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td>$${(item.quantity * item.price).toFixed(2)}</td>
+        </tr>
+    `).join('');
+    
+    const modalContent = document.getElementById('order-details-content');
+    modalContent.innerHTML = `
+        <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+            <h3>Order #${order.orderNumber}</h3>
+            <p><strong>Date:</strong> ${order.orderDate || 'N/A'}</p>
+            <p>
+                <strong>Status:</strong> 
+                <span class="badge badge-${getStatusBadge(order.status)}">${order.status || 'pending'}</span>
+                &nbsp;&nbsp;
+                <strong>Payment:</strong>
+                <span class="badge badge-${getPaymentBadge(order.paymentStatus)}">${order.paymentStatus || 'pending'}</span>
+            </p>
+        </div>
+        
+        ${customerHtml}
+        
+        <div style="margin-bottom: 15px;">
+            <h4>Shipping Address</h4>
+            ${addressHtml}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <h4>Order Items</h4>
+            <table class="table" style="font-size: 13px;">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itemsHtml}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align: right;"><strong>Subtotal:</strong></td>
+                        <td>$${subtotal.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right;"><strong>Tax:</strong></td>
+                        <td>$${tax.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right;"><strong>Shipping:</strong></td>
+                        <td>$${shipping.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+                        <td><strong>$${total.toFixed(2)}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        ${order.trackingNumber ? `
+            <div style="margin-bottom: 15px;">
+                <h4>Tracking Information</h4>
+                <p><strong>Tracking Number:</strong> ${order.trackingNumber}</p>
+                ${order.estimatedDelivery ? `<p><strong>Estimated Delivery:</strong> ${order.estimatedDelivery}</p>` : ''}
+                ${order.deliveryDate ? `<p><strong>Delivered:</strong> ${order.deliveryDate}</p>` : ''}
+            </div>
+        ` : ''}
+        
+        ${order.notes ? `
+            <div>
+                <h4>Notes</h4>
+                <p>${order.notes}</p>
+            </div>
+        ` : ''}
+    `;
+    
+    document.getElementById('orderDetailsModal').style.display = 'block';
+}        
+        // Open update status modal
+        function openUpdateStatus(id, currentStatus) {
+            document.getElementById('update-order-id').value = id;
+            document.getElementById('new-order-status').value = currentStatus;
+            
+            // Show tracking field for shipped status
+            document.getElementById('tracking-group').style.display = 
+                currentStatus === 'shipped' ? 'block' : 'none';
+            
+            document.getElementById('updateStatusModal').style.display = 'block';
+        }
+        
+        // Update order status
+        function updateOrderStatus() {
+            const id = parseInt(document.getElementById('update-order-id').value);
+            const newStatus = document.getElementById('new-order-status').value;
+            const tracking = document.getElementById('tracking-number').value;
+            
+            const order = Storage.getItemById('orders', id);
+            if (order) {
+                order.status = newStatus;
+                if (newStatus === 'shipped' && tracking) {
+                    order.trackingNumber = tracking;
+                }
+                
+                Storage.updateItem('orders', id, order);
+                closeModal('updateStatusModal');
+                loadOrders();
+            }
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': 'warning',
+                'processing': 'info',
+                'shipped': 'primary',
+                'delivered': 'success',
+                'cancelled': 'danger'
+            };
+            return badges[status] || 'secondary';
+        }
+        
+        function getPaymentBadge(status) {
+            const badges = {
+                'paid': 'success',
+                'pending': 'warning',
+                'failed': 'danger'
+            };
+            return badges[status] || 'secondary';
+        }
+        
+        // Filter orders
+        function filterOrders() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
+            const payment = document.getElementById('paymentFilter').value;
+            
+            let filtered = currentOrders;
+            
+            if (searchTerm) {
+                filtered = filtered.filter(order => 
+                    order.orderNumber.toLowerCase().includes(searchTerm) ||
+                    order.customer.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (status) {
+                filtered = filtered.filter(order => order.status === status);
+            }
+            
+            if (payment) {
+                filtered = filtered.filter(order => order.paymentStatus === payment);
+            }
+            
+            renderOrdersTable(filtered);
+        }
+        
+        // Modal functions
+        function openAddOrderModal() {
+            document.getElementById('addOrderModal').style.display = 'block';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterOrders);
+        document.getElementById('statusFilter').addEventListener('change', filterOrders);
+        document.getElementById('paymentFilter').addEventListener('change', filterOrders);
+        
+        // Show/hide tracking field based on status selection
+        document.getElementById('new-order-status').addEventListener('change', function() {
+            document.getElementById('tracking-group').style.display = 
+                this.value === 'shipped' ? 'block' : 'none';
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadOrders);
+    </script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Supply Chain Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+<!-- Header -->
+<div class="top-header">
+    <div class="header-title">
+        <h2>Dashboard</h2>
+        <p>Welcome back, <span id="welcome-user">Admin</span>!</p>
+    </div>
+    <div class="header-actions">
+        <div class="user-info">
+            <div class="user-avatar">A</div>
+            <div>
+                <p style="font-weight: bold;" id="display-name">Admin User</p>
+                <p style="font-size: 12px; color: #666;">Administrator</p>
+            </div>
+        </div>
+        <button class="btn btn-danger" onclick="showResetModal()" style="margin-left: 15px;">
+            🗑️ Reset System
+        </button>
+        <a href="documentation.html" class="btn btn-info" style="margin-left: 10px; background: #3498db; color: white; text-decoration: none; padding: 8px 16px; border-radius: 5px;">
+    📚 Documentation
+</a>
+    </div>
+</div>            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon inventory">📦</div>
+                    <div class="stat-details">
+                        <h4>Inventory Value</h4>
+                        <p class="stat-number" id="inventory-value">$0</p>
+                        <p style="font-size: 12px; color: #666;" id="inventory-items">0 items</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon procurement">🛒</div>
+                    <div class="stat-details">
+                        <h4>Procurement</h4>
+                        <p class="stat-number" id="procurement-value">$0</p>
+                        <p style="font-size: 12px; color: #666;" id="procurement-pending">0 pending</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon cost">💰</div>
+                    <div class="stat-details">
+                        <h4>Total Costs</h4>
+                        <p class="stat-number" id="costs-value">$0</p>
+                        <p style="font-size: 12px; color: #666;" id="costs-average">$0 avg/day</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orders">📋</div>
+                    <div class="stat-details">
+                        <h4>Orders</h4>
+                        <p class="stat-number" id="orders-value">$0</p>
+                        <p style="font-size: 12px; color: #666;" id="orders-pending">0 pending</p>
+                    </div>
+                </div>
+            </div>
+            
+<!-- Charts Grid - FIXED HEIGHT -->
+<div class="charts-grid">
+    <!-- Inventory by Category Chart -->
+    <div class="chart-container">
+        <h3>Inventory by Category</h3>
+        <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="inventoryChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Cost Trend Chart -->
+    <div class="chart-container">
+        <h3>Cost Trend (Last 7 Days)</h3>
+        <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="costChart"></canvas>
+        </div>
+    </div>
+</div>
+            
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Recent Orders</h3>
+                    <a href="pages/order-management.html" class="btn btn-primary btn-sm">View All</a>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-orders">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Low Stock Alert -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Low Stock Alert</h3>
+                    <a href="pages/inventory.html" class="btn btn-warning btn-sm">Manage Stock</a>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Product</th>
+                                <th>Current Stock</th>
+                                <th>Reorder Level</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="low-stock-items">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Simple Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/components/sidebar.js"></script>
+    <script>        
+        // Set welcome message
+        const username = localStorage.getItem('username') || 'Admin';
+        document.getElementById('welcome-user').textContent = username;
+        document.getElementById('display-name').textContent = username;
+    </script>
+<!-- Reset System Modal -->
+<div id="resetModal" class="modal">
+    <div class="modal-content" style="width: 500px;">
+        <div class="modal-header">
+            <h2>⚠️ Reset System</h2>
+            <button class="close-btn" onclick="closeResetModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 20px; color: #e74c3c; font-weight: bold;">
+                This will delete ALL existing data including:
+            </p>
+            <ul style="margin-left: 20px; margin-bottom: 20px; line-height: 1.8;">
+                <li>📦 All inventory items</li>
+                <li>🛒 All purchase orders</li>
+                <li>💰 All cost entries</li>
+                <li>📋 All customer orders</li>
+                <li>🏢 All supplier information</li>
+            </ul>
+            <p style="margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 5px;">
+                <strong>This action cannot be undone!</strong><br>
+                After resetting, you can start adding your own data.
+            </p>
+            
+            <div class="form-group">
+                <label>Type "RESET" to confirm:</label>
+                <input type="text" id="resetConfirm" class="form-control" placeholder="RESET">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" onclick="resetSystem()" id="resetBtn" disabled>Reset System</button>
+            <button class="btn" onclick="closeResetModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Reset modal functions
+    function showResetModal() {
+        document.getElementById('resetModal').style.display = 'block';
+        document.getElementById('resetConfirm').value = '';
+        document.getElementById('resetBtn').disabled = true;
+    }
+    
+    function closeResetModal() {
+        document.getElementById('resetModal').style.display = 'none';
+    }
+    
+    // Enable reset button when typing RESET
+    document.getElementById('resetConfirm')?.addEventListener('input', function(e) {
+        const resetBtn = document.getElementById('resetBtn');
+        resetBtn.disabled = e.target.value !== 'RESET';
+    });
+    
+    // Reset system function
+    function resetSystem() {
+        const confirmText = document.getElementById('resetConfirm').value;
+        if (confirmText !== 'RESET') {
+            alert('Please type RESET to confirm');
+            return;
+        }
+        
+        // Clear all data from localStorage
+        localStorage.removeItem('inventory');
+        localStorage.removeItem('procurement');
+        localStorage.removeItem('costs');
+        localStorage.removeItem('orders');
+        localStorage.removeItem('suppliers');
+        
+        // Initialize with empty arrays
+        localStorage.setItem('inventory', JSON.stringify([]));
+        localStorage.setItem('procurement', JSON.stringify([]));
+        localStorage.setItem('costs', JSON.stringify([]));
+        localStorage.setItem('orders', JSON.stringify([]));
+        localStorage.setItem('suppliers', JSON.stringify([]));
+        
+        closeResetModal();
+        
+        // Show success message
+        alert('✅ System reset successfully! All mock data has been removed. You can now add your own data.');
+        
+        // Reload the page to reflect empty state
+        location.reload();
+    }
+</script>
+</body>
+</html>

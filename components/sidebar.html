@@ -1,0 +1,78 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h3>SCM System</h3>
+        <p>Supply Chain Manager</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li>
+            <a href="../dashboard.html" class="sidebar-link" data-page="dashboard">
+                <i>📊</i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="../pages/inventory.html" class="sidebar-link" data-page="inventory">
+                <i>📦</i> Inventory
+            </a>
+        </li>
+        <li>
+            <a href="../pages/procurement.html" class="sidebar-link" data-page="procurement">
+                <i>🛒</i> Procurement
+            </a>
+        </li>
+        <li>
+            <a href="../pages/cost-management.html" class="sidebar-link" data-page="cost-management">
+                <i>💰</i> Cost Management
+            </a>
+        </li>
+        <li>
+            <a href="../pages/order-management.html" class="sidebar-link" data-page="order-management">
+                <i>📋</i> Order Management
+            </a>
+        </li>
+    </ul>
+    
+    <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px;">
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">
+            <p style="font-size: 12px; opacity: 0.8;">Logged in as:</p>
+            <p style="font-weight: bold;" id="username-display">Admin</p>
+            <button onclick="logout()" style="width: 100%; margin-top: 10px; padding: 5px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 3px; cursor: pointer;">
+                Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = '../index.html';
+    }
+    
+    // Update username
+    const username = localStorage.getItem('username') || 'Admin';
+    document.getElementById('username-display').textContent = username;
+    
+    // Set active class based on current page
+    function setActiveSidebarLink() {
+        // Get current page filename
+        const currentPath = window.location.pathname;
+        const currentPage = currentPath.split('/').pop() || 'dashboard.html';
+        
+        // Remove active class from all links
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Add active class to matching link
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href.includes(currentPage)) {
+                link.classList.add('active');
+            }
+        });
+    }
+    
+    // Call on page load
+    document.addEventListener('DOMContentLoaded', setActiveSidebarLink);
+</script>

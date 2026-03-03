@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement Management - Supply Chain Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="top-header">
+                <div class="header-title">
+                    <h2>Procurement Management</h2>
+                    <p>Manage purchase orders and suppliers</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openAddPOModal()">
+                        + New Purchase Order
+                    </button>
+                    <button class="btn btn-success" onclick="openAddSupplierModal()" style="margin-left: 10px;">
+                        + Add Supplier
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon procurement">🛒</div>
+                    <div class="stat-details">
+                        <h4>Total POs</h4>
+                        <p class="stat-number" id="total-pos">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon procurement" style="background: #f39c12;">⏳</div>
+                    <div class="stat-details">
+                        <h4>Pending</h4>
+                        <p class="stat-number" id="pending-pos">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon procurement" style="background: #27ae60;">✅</div>
+                    <div class="stat-details">
+                        <h4>Approved</h4>
+                        <p class="stat-number" id="approved-pos">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon procurement" style="background: #3498db;">🏢</div>
+                    <div class="stat-details">
+                        <h4>Suppliers</h4>
+                        <p class="stat-number" id="total-suppliers">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabs -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button class="btn" id="tab-pos" onclick="showTab('pos')" style="background: var(--primary-color); color: white;">Purchase Orders</button>
+                <button class="btn" id="tab-suppliers" onclick="showTab('suppliers')">Suppliers</button>
+            </div>
+            
+            <!-- Purchase Orders Section -->
+            <div id="pos-section">
+                <!-- Filters -->
+                <div class="card">
+                    <div class="filter-group">
+                        <input type="text" id="searchInput" class="form-control" 
+                               placeholder="Search by PO Number or Supplier...">
+                        <select id="statusFilter" class="form-control">
+                            <option value="">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <select id="supplierFilter" class="form-control">
+                            <option value="">All Suppliers</option>
+                            <!-- Populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Procurement Table -->
+                <div class="card">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>PO Number</th>
+                                    <th>Supplier</th>
+                                    <th>Items</th>
+                                    <th>Total Amount</th>
+                                    <th>Status</th>
+                                    <th>Order Date</th>
+                                    <th>Expected Delivery</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="procurement-tbody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Suppliers Section (Hidden by default) -->
+            <div id="suppliers-section" style="display: none;">
+                <!-- Suppliers Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Supplier List</h3>
+                        <button class="btn btn-success btn-sm" onclick="openAddSupplierModal()">
+                            + Add Supplier
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Category</th>
+                                    <th>Payment Terms</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suppliers-tbody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add PO Modal -->
+    <div id="addPOModal" class="modal">
+        <div class="modal-content" style="width: 700px;">
+            <div class="modal-header">
+                <h2>Create Purchase Order</h2>
+                <button class="close-btn" onclick="closeModal('addPOModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addPOForm">
+                    <div class="form-group">
+                        <label>Supplier *</label>
+                        <select id="po-supplier" class="form-control" required>
+                            <option value="">Select Supplier</option>
+                            <!-- Populated by JavaScript -->
+                        </select>
+                        <small><a href="#" onclick="openAddSupplierModal(); return false;">+ Add New Supplier</a></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Payment Terms</label>
+                        <select id="po-paymentTerms" class="form-control" required>
+                            <option value="Net 15">Net 15</option>
+                            <option value="Net 30">Net 30</option>
+                            <option value="Net 45">Net 45</option>
+                            <option value="Due on Receipt">Due on Receipt</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4>Order Items</h4>
+                        <div id="items-container">
+                            <!-- Dynamic items will be added here -->
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addItemRow()">
+                            + Add Item
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Expected Delivery Date</label>
+                        <input type="date" id="po-expectedDelivery" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="po-notes" class="form-control" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="savePO()">Create Purchase Order</button>
+                <button class="btn" onclick="closeModal('addPOModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Supplier Modal -->
+    <div id="addSupplierModal" class="modal">
+        <div class="modal-content" style="width: 500px;">
+            <div class="modal-header">
+                <h2>Add New Supplier</h2>
+                <button class="close-btn" onclick="closeModal('addSupplierModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addSupplierForm">
+                    <div class="form-group">
+                        <label>Company Name *</label>
+                        <input type="text" id="supplier-name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Contact Person</label>
+                        <input type="text" id="supplier-contact" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="supplier-email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Phone *</label>
+                        <input type="text" id="supplier-phone" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="supplier-category" class="form-control">
+                            <option value="Electronics">Electronics</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Office Supplies">Office Supplies</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Raw Materials">Raw Materials</option>
+                            <option value="Packaging">Packaging</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Payment Terms</label>
+                        <select id="supplier-paymentTerms" class="form-control">
+                            <option value="Net 15">Net 15</option>
+                            <option value="Net 30">Net 30</option>
+                            <option value="Net 45">Net 45</option>
+                            <option value="Due on Receipt">Due on Receipt</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="supplier-address" class="form-control" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="supplier-notes" class="form-control" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="saveSupplier()">Add Supplier</button>
+                <button class="btn" onclick="closeModal('addSupplierModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Supplier Modal -->
+    <div id="editSupplierModal" class="modal">
+        <div class="modal-content" style="width: 500px;">
+            <div class="modal-header">
+                <h2>Edit Supplier</h2>
+                <button class="close-btn" onclick="closeModal('editSupplierModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editSupplierForm">
+                    <input type="hidden" id="edit-supplier-id">
+                    
+                    <div class="form-group">
+                        <label>Company Name *</label>
+                        <input type="text" id="edit-supplier-name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Contact Person</label>
+                        <input type="text" id="edit-supplier-contact" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="edit-supplier-email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Phone *</label>
+                        <input type="text" id="edit-supplier-phone" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="edit-supplier-category" class="form-control">
+                            <option value="Electronics">Electronics</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Office Supplies">Office Supplies</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Raw Materials">Raw Materials</option>
+                            <option value="Packaging">Packaging</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Payment Terms</label>
+                        <select id="edit-supplier-paymentTerms" class="form-control">
+                            <option value="Net 15">Net 15</option>
+                            <option value="Net 30">Net 30</option>
+                            <option value="Net 45">Net 45</option>
+                            <option value="Due on Receipt">Due on Receipt</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="edit-supplier-address" class="form-control" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="edit-supplier-notes" class="form-control" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="updateSupplier()">Update Supplier</button>
+                <button class="btn" onclick="closeModal('editSupplierModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View PO Modal -->
+    <div id="viewPOModal" class="modal">
+        <div class="modal-content" style="width: 600px;">
+            <div class="modal-header">
+                <h2>Purchase Order Details</h2>
+                <button class="close-btn" onclick="closeModal('viewPOModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="po-details-content">
+                <!-- Populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="updatePOStatus('approved')">Approve</button>
+                <button class="btn btn-danger" onclick="updatePOStatus('cancelled')">Cancel</button>
+                <button class="btn" onclick="closeModal('viewPOModal')">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script>
+        // Global variables
+        let currentProcurement = [];
+        let currentSuppliers = [];
+        let currentPOId = null;
+        let currentTab = 'pos';
+        
+        // Load sidebar
+        fetch('../components/sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+            });
+        
+        // Initialize
+        function init() {
+            loadProcurement();
+            loadSuppliers();
+            showTab(currentTab);
+        }
+        
+        // Tab switching
+        function showTab(tab) {
+            currentTab = tab;
+            
+            // Update button styles
+            document.getElementById('tab-pos').style.background = tab === 'pos' ? 'var(--primary-color)' : '';
+            document.getElementById('tab-pos').style.color = tab === 'pos' ? 'white' : '';
+            document.getElementById('tab-suppliers').style.background = tab === 'suppliers' ? 'var(--primary-color)' : '';
+            document.getElementById('tab-suppliers').style.color = tab === 'suppliers' ? 'white' : '';
+            
+            // Show/hide sections
+            document.getElementById('pos-section').style.display = tab === 'pos' ? 'block' : 'none';
+            document.getElementById('suppliers-section').style.display = tab === 'suppliers' ? 'block' : 'none';
+        }
+        
+        // Load procurement data
+        function loadProcurement() {
+            currentProcurement = Storage.getData('procurement');
+            renderProcurementTable(currentProcurement);
+            updateStats();
+        }
+        
+        // Load suppliers
+        function loadSuppliers() {
+            currentSuppliers = Storage.getData('suppliers');
+            renderSuppliersTable();
+            updateSupplierStats();
+            loadSupplierDropdowns();
+        }
+        
+        // Load supplier dropdowns in filters and forms
+        function loadSupplierDropdowns() {
+            // PO Modal dropdown
+            const poSelect = document.getElementById('po-supplier');
+            if (poSelect) {
+                poSelect.innerHTML = '<option value="">Select Supplier</option>';
+                if (currentSuppliers.length > 0) {
+                    currentSuppliers.forEach(supplier => {
+                        poSelect.innerHTML += `<option value="${supplier.name}">${supplier.name}</option>`;
+                    });
+                }
+            }
+            
+            // Filter dropdown
+            const filterSelect = document.getElementById('supplierFilter');
+            if (filterSelect) {
+                filterSelect.innerHTML = '<option value="">All Suppliers</option>';
+                if (currentSuppliers.length > 0) {
+                    currentSuppliers.forEach(supplier => {
+                        filterSelect.innerHTML += `<option value="${supplier.name}">${supplier.name}</option>`;
+                    });
+                }
+            }
+        }
+        
+        // Render suppliers table
+        function renderSuppliersTable() {
+            const tbody = document.getElementById('suppliers-tbody');
+            
+            if (!currentSuppliers || currentSuppliers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 50px;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">🏢</div>
+                            <h3 style="margin-bottom: 15px;">No Suppliers Yet</h3>
+                            <p style="color: #666; margin-bottom: 20px;">Add your first supplier to start creating purchase orders.</p>
+                            <button class="btn btn-success" onclick="openAddSupplierModal()">
+                                + Add Your First Supplier
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = currentSuppliers.map(supplier => `
+                <tr>
+                    <td><strong>${supplier.name}</strong></td>
+                    <td>${supplier.contact || 'N/A'}</td>
+                    <td>${supplier.email || 'N/A'}</td>
+                    <td>${supplier.phone || 'N/A'}</td>
+                    <td><span class="badge badge-info">${supplier.category || 'Other'}</span></td>
+                    <td>${supplier.paymentTerms || 'Net 30'}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editSupplier(${supplier.id})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteSupplier(${supplier.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Render procurement table
+        function renderProcurementTable(items) {
+            const tbody = document.getElementById('procurement-tbody');
+            
+            if (!items || items.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 50px;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">🛒</div>
+                            <h3 style="margin-bottom: 15px;">No Purchase Orders Yet</h3>
+                            <p style="color: #666; margin-bottom: 20px;">Create your first purchase order to start tracking procurement.</p>
+                            ${currentSuppliers.length > 0 ? 
+                                '<button class="btn btn-primary" onclick="openAddPOModal()">+ Create First PO</button>' :
+                                '<p style="color: #f39c12;">⚠️ You need to add suppliers first.</p>'
+                            }
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = items.map(po => `
+                <tr>
+                    <td>${po.poNumber || 'N/A'}</td>
+                    <td>${po.supplier || 'N/A'}</td>
+                    <td>${po.items ? po.items.length : 0} item(s)</td>
+                    <td>$${(po.totalAmount || 0).toFixed(2)}</td>
+                    <td><span class="badge badge-${getStatusBadge(po.status)}">${po.status || 'pending'}</span></td>
+                    <td>${po.orderDate || 'N/A'}</td>
+                    <td>${po.expectedDelivery || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm" onclick="viewPO(${po.id})">View</button>
+                        ${po.status === 'pending' ? 
+                            `<button class="btn btn-success btn-sm" onclick="updatePOStatus(${po.id}, 'approved')">Approve</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Update stats
+        function updateStats() {
+            const total = currentProcurement.length;
+            const pending = currentProcurement.filter(p => p.status === 'pending').length;
+            const approved = currentProcurement.filter(p => p.status === 'approved').length;
+            const totalValue = currentProcurement.reduce((sum, p) => sum + (p.totalAmount || 0), 0);
+            
+            document.getElementById('total-pos').textContent = total;
+            document.getElementById('pending-pos').textContent = pending;
+            document.getElementById('approved-pos').textContent = approved;
+        }
+        
+        // Update supplier stats
+        function updateSupplierStats() {
+            document.getElementById('total-suppliers').textContent = currentSuppliers.length;
+        }
+        
+        // Add item row to PO form
+        let itemCount = 0;
+        function addItemRow() {
+            const container = document.getElementById('items-container');
+            const inventory = Storage.getData('inventory');
+            
+            if (inventory.length === 0) {
+                alert('Please add inventory items first before creating a purchase order.');
+                return;
+            }
+            
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.style.display = 'flex';
+            row.style.gap = '10px';
+            row.style.marginBottom = '10px';
+            row.innerHTML = `
+                <select class="form-control item-sku" style="flex: 2;" onchange="updateItemPrice(this)">
+                    <option value="">Select Item</option>
+                    ${inventory.map(item => `<option value="${item.sku}" data-price="${item.price || 0}" data-name="${item.name}">${item.sku} - ${item.name}</option>`).join('')}
+                </select>
+                <input type="number" class="form-control item-quantity" placeholder="Qty" style="flex: 1;" min="1" value="1">
+                <input type="number" class="form-control item-price" placeholder="Price" style="flex: 1;" step="0.01" readonly>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.appendChild(row);
+            itemCount++;
+        }
+        
+        // Update item price when SKU is selected
+        window.updateItemPrice = function(select) {
+            const selected = select.options[select.selectedIndex];
+            const price = selected.dataset.price;
+            const priceInput = select.parentElement.querySelector('.item-price');
+            if (price) {
+                priceInput.value = price;
+            }
+        };
+        
+        // Save purchase order
+// Save purchase order
+function savePO() {
+    const supplier = document.getElementById('po-supplier').value;
+    const paymentTerms = document.getElementById('po-paymentTerms').value;
+    const expectedDelivery = document.getElementById('po-expectedDelivery').value;
+    const notes = document.getElementById('po-notes').value;
+    
+    if (!supplier) {
+        alert('Please select a supplier');
+        return;
+    }
+    
+    // Get items
+    const items = [];
+    const itemRows = document.querySelectorAll('.item-row');
+    let totalAmount = 0;
+    
+    if (itemRows.length === 0) {
+        alert('Please add at least one item');
+        return;
+    }
+    
+    itemRows.forEach(row => {
+        const skuSelect = row.querySelector('.item-sku');
+        const sku = skuSelect.value;
+        const quantity = parseInt(row.querySelector('.item-quantity').value);
+        const price = parseFloat(row.querySelector('.item-price').value);
+        const selectedOption = skuSelect.options[skuSelect.selectedIndex];
+        const name = selectedOption ? selectedOption.dataset.name : '';
+        
+        if (sku && quantity && price) {
+            items.push({
+                sku: sku,
+                name: name,
+                quantity: quantity,
+                unitPrice: price
+            });
+            
+            totalAmount += quantity * price;
+        }
+    });
+    
+    if (items.length === 0) {
+        alert('Please fill in all item details');
+        return;
+    }
+    
+    const newPO = {
+        poNumber: 'PO-' + Date.now(),
+        supplier: supplier,
+        items: items,
+        totalAmount: totalAmount,
+        status: 'pending',
+        orderDate: new Date().toISOString().split('T')[0],
+        expectedDelivery: expectedDelivery,
+        paymentTerms: paymentTerms,
+        notes: notes
+    };
+    
+    // Add purchase order WITHOUT notification
+    Storage.addItem('procurement', newPO, false);
+    
+    // Add cost entry WITHOUT notification
+    const costEntry = {
+        category: 'Procurement',
+        amount: totalAmount,
+        date: new Date().toISOString().split('T')[0],
+        description: `Purchase Order ${newPO.poNumber}`,
+        supplier: supplier
+    };
+    Storage.addItem('costs', costEntry, false);
+    
+    closeModal('addPOModal');
+    loadProcurement();
+    
+    // Reset form
+    document.getElementById('addPOForm').reset();
+    document.getElementById('items-container').innerHTML = '';
+    
+    // Show subtle success message
+    showTemporaryMessage('✅ Purchase order created successfully!');
+}        
+// Save supplier
+function saveSupplier() {
+    const name = document.getElementById('supplier-name').value;
+    const contact = document.getElementById('supplier-contact').value;
+    const email = document.getElementById('supplier-email').value;
+    const phone = document.getElementById('supplier-phone').value;
+    const category = document.getElementById('supplier-category').value;
+    const paymentTerms = document.getElementById('supplier-paymentTerms').value;
+    const address = document.getElementById('supplier-address').value;
+    const notes = document.getElementById('supplier-notes').value;
+    
+    if (!name || !email || !phone) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    const newSupplier = {
+        name: name,
+        contact: contact,
+        email: email,
+        phone: phone,
+        category: category,
+        paymentTerms: paymentTerms,
+        address: address,
+        notes: notes,
+        status: 'active',
+        since: new Date().toISOString().split('T')[0]
+    };
+    
+    // Pass false to suppress the notification popup
+    Storage.addItem('suppliers', newSupplier, false);
+    
+    closeModal('addSupplierModal');
+    loadSuppliers();
+    
+    // Reset form
+    document.getElementById('addSupplierForm').reset();
+    
+    // If we're in PO modal, refresh supplier dropdown
+    loadSupplierDropdowns();
+    
+    // Show a more subtle success message
+    showTemporaryMessage('Supplier added successfully!');
+}
+
+// Add a subtle temporary message function
+function showTemporaryMessage(message) {
+    // Create message element
+    const msgDiv = document.createElement('div');
+    msgDiv.style.position = 'fixed';
+    msgDiv.style.top = '40px';
+    msgDiv.style.right = '20px';
+    msgDiv.style.backgroundColor = '#27ae60';
+    msgDiv.style.color = 'white';
+    msgDiv.style.padding = '10px 20px';
+    msgDiv.style.borderRadius = '5px';
+    msgDiv.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+    msgDiv.style.zIndex = '9999';
+    msgDiv.style.animation = 'slideIn 0.3s';
+    msgDiv.innerText = message;
+    
+    document.body.appendChild(msgDiv);
+    
+    // Remove after 2 seconds
+    setTimeout(() => {
+        msgDiv.style.animation = 'slideOut 0.3s';
+        setTimeout(() => {
+            document.body.removeChild(msgDiv);
+        }, 300);
+    }, 2000);
+}        
+        // Edit supplier
+        function editSupplier(id) {
+            const supplier = Storage.getItemById('suppliers', id);
+            if (!supplier) return;
+            
+            document.getElementById('edit-supplier-id').value = supplier.id;
+            document.getElementById('edit-supplier-name').value = supplier.name || '';
+            document.getElementById('edit-supplier-contact').value = supplier.contact || '';
+            document.getElementById('edit-supplier-email').value = supplier.email || '';
+            document.getElementById('edit-supplier-phone').value = supplier.phone || '';
+            document.getElementById('edit-supplier-category').value = supplier.category || 'Other';
+            document.getElementById('edit-supplier-paymentTerms').value = supplier.paymentTerms || 'Net 30';
+            document.getElementById('edit-supplier-address').value = supplier.address || '';
+            document.getElementById('edit-supplier-notes').value = supplier.notes || '';
+            
+            document.getElementById('editSupplierModal').style.display = 'block';
+        }
+        
+        // Update supplier
+        function updateSupplier() {
+            const id = parseInt(document.getElementById('edit-supplier-id').value);
+            const updatedSupplier = {
+                name: document.getElementById('edit-supplier-name').value,
+                contact: document.getElementById('edit-supplier-contact').value,
+                email: document.getElementById('edit-supplier-email').value,
+                phone: document.getElementById('edit-supplier-phone').value,
+                category: document.getElementById('edit-supplier-category').value,
+                paymentTerms: document.getElementById('edit-supplier-paymentTerms').value,
+                address: document.getElementById('edit-supplier-address').value,
+                notes: document.getElementById('edit-supplier-notes').value,
+                status: 'active',
+                updated: new Date().toISOString().split('T')[0]
+            };
+            
+            Storage.updateItem('suppliers', id, updatedSupplier);
+            closeModal('editSupplierModal');
+            loadSuppliers();
+            loadSupplierDropdowns();
+        }
+        
+        // Delete supplier
+        function deleteSupplier(id) {
+            if (confirm('Are you sure you want to delete this supplier? This may affect existing purchase orders.')) {
+                Storage.deleteItem('suppliers', id);
+                loadSuppliers();
+                loadSupplierDropdowns();
+            }
+        }
+        
+        // View PO details
+        function viewPO(id) {
+            const po = Storage.getItemById('procurement', id);
+            if (!po) return;
+            
+            currentPOId = id;
+            
+            const content = document.getElementById('po-details-content');
+            content.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <p><strong>PO Number:</strong> ${po.poNumber}</p>
+                    <p><strong>Supplier:</strong> ${po.supplier}</p>
+                    <p><strong>Order Date:</strong> ${po.orderDate}</p>
+                    <p><strong>Expected Delivery:</strong> ${po.expectedDelivery || 'N/A'}</p>
+                    <p><strong>Payment Terms:</strong> ${po.paymentTerms || 'N/A'}</p>
+                    <p><strong>Status:</strong> <span class="badge badge-${getStatusBadge(po.status)}">${po.status}</span></p>
+                </div>
+                
+                <h4>Items:</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${(po.items || []).map(item => `
+                            <tr>
+                                <td>${item.name || item.sku}</td>
+                                <td>${item.quantity}</td>
+                                <td>$${(item.unitPrice || 0).toFixed(2)}</td>
+                                <td>$${(item.quantity * (item.unitPrice || 0)).toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+                            <td><strong>$${(po.totalAmount || 0).toFixed(2)}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                ${po.notes ? `<p><strong>Notes:</strong> ${po.notes}</p>` : ''}
+            `;
+            
+            document.getElementById('viewPOModal').style.display = 'block';
+        }
+        
+        // Update PO status
+        function updatePOStatus(status) {
+            if (currentPOId) {
+                const po = Storage.getItemById('procurement', currentPOId);
+                if (po) {
+                    po.status = status;
+                    Storage.updateItem('procurement', currentPOId, po);
+                    
+                    // If delivered, update inventory
+                    if (status === 'delivered') {
+                        (po.items || []).forEach(item => {
+                            const inventory = Storage.getData('inventory');
+                            const inventoryItem = inventory.find(i => i.sku === item.sku);
+                            if (inventoryItem) {
+                                inventoryItem.quantity = (inventoryItem.quantity || 0) + item.quantity;
+                                Storage.updateItem('inventory', inventoryItem.id, inventoryItem);
+                            }
+                        });
+                    }
+                    
+                    closeModal('viewPOModal');
+                    loadProcurement();
+                }
+            }
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': 'warning',
+                'approved': 'success',
+                'delivered': 'info',
+                'cancelled': 'danger'
+            };
+            return badges[status] || 'secondary';
+        }
+        
+        // Filter procurement
+        function filterProcurement() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
+            const supplier = document.getElementById('supplierFilter').value;
+            
+            let filtered = currentProcurement;
+            
+            if (searchTerm) {
+                filtered = filtered.filter(po => 
+                    (po.poNumber && po.poNumber.toLowerCase().includes(searchTerm)) ||
+                    (po.supplier && po.supplier.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (status) {
+                filtered = filtered.filter(po => po.status === status);
+            }
+            
+            if (supplier) {
+                filtered = filtered.filter(po => po.supplier === supplier);
+            }
+            
+            renderProcurementTable(filtered);
+        }
+        
+        // Modal functions
+        function openAddPOModal() {
+            if (currentSuppliers.length === 0) {
+                if (confirm('No suppliers found. Would you like to add a supplier first?')) {
+                    openAddSupplierModal();
+                }
+                return;
+            }
+            document.getElementById('addPOModal').style.display = 'block';
+        }
+        
+        function openAddSupplierModal() {
+            document.getElementById('addSupplierModal').style.display = 'block';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Event listeners
+        document.getElementById('searchInput')?.addEventListener('input', filterProcurement);
+        document.getElementById('statusFilter')?.addEventListener('change', filterProcurement);
+        document.getElementById('supplierFilter')?.addEventListener('change', filterProcurement);
+        
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
