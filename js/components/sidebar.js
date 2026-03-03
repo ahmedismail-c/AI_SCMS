@@ -9,42 +9,12 @@ class SidebarManager {
         this.setupLogout();
     }
     
-    // Get the correct base path for GitHub Pages
-    getBasePath() {
-        const path = window.location.pathname;
-        // Check if we're in a GitHub Pages repo (has repo name in path)
-        if (path.includes('/AI_SCMS/')) {
-            return '/AI_SCMS';
-        }
-        return '';
-    }
-    
-    // Get correct path for sidebar.html
-    getSidebarPath() {
-        const basePath = this.getBasePath();
-        const currentPath = window.location.pathname;
-        
-        // If we're in a pages subfolder
-        if (currentPath.includes('/pages/')) {
-            return `${basePath}/components/sidebar.html`;
-        }
-        return `${basePath}/components/sidebar.html`;
-    }
-    
     loadSidebar() {
         const sidebarContainer = document.getElementById('sidebar-container');
         if (!sidebarContainer) return;
         
-        const sidebarPath = this.getSidebarPath();
-        console.log('Loading sidebar from:', sidebarPath); // Debug
-        
-        fetch(sidebarPath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-            })
+        fetch('../components/sidebar.html')
+            .then(response => response.text())
             .then(html => {
                 sidebarContainer.innerHTML = html;
                 this.setActiveLink();
@@ -58,68 +28,35 @@ class SidebarManager {
     }
     
     setActiveLink() {
+        // Get current page filename
+        const currentPath = window.location.pathname;
+        const currentFile = currentPath.split('/').pop() || 'dashboard.html';
+        
         // Wait for sidebar to be loaded
         setTimeout(() => {
             const links = document.querySelectorAll('.sidebar-link');
-            if (!links.length) return;
-            
-            // Get current page info
-            const currentPath = window.location.pathname;
-            const currentFile = currentPath.split('/').pop() || 'dashboard.html';
-            const basePath = this.getBasePath();
-            
-            console.log('Current file:', currentFile); // Debug
-            
             links.forEach(link => {
                 link.classList.remove('active');
-                
-                let href = link.getAttribute('href');
-                if (!href) return;
-                
-                // Remove base path from href for comparison
-                if (basePath && href.startsWith(basePath)) {
-                    href = href.substring(basePath.length);
-                }
-                
-                // Get filename from href
-                const hrefFile = href.split('/').pop();
-                
-                // Check if this link matches current page
-                if (hrefFile === currentFile) {
-                    link.classList.add('active');
-                    console.log('Active set for:', href);
-                }
-                
-                // Handle root/dashboard case
-                if ((currentFile === '' || currentFile === 'dashboard.html') && 
-                    (href.includes('dashboard') || href === 'dashboard.html' || href === '/dashboard.html')) {
+                const href = link.getAttribute('href');
+                if (href && href.includes(currentFile)) {
                     link.classList.add('active');
                 }
             });
-        }, 200);
+        }, 100);
     }
     
     setUsername() {
-        // Try multiple times since element might not be loaded yet
-        const checkInterval = setInterval(() => {
-            const displayEl = document.getElementById('username-display');
-            if (displayEl) {
-                const username = localStorage.getItem('username') || 'Admin';
-                displayEl.textContent = username;
-                clearInterval(checkInterval);
-            }
-        }, 100);
-        
-        // Stop checking after 3 seconds
-        setTimeout(() => clearInterval(checkInterval), 3000);
+        const username = localStorage.getItem('username') || 'Admin';
+        const displayEl = document.getElementById('username-display');
+        if (displayEl) {
+            displayEl.textContent = username;
+        }
     }
     
     setupLogout() {
         // Use event delegation since logout button is loaded dynamically
         document.addEventListener('click', (e) => {
-            const target = e.target;
-            if (target.id === 'logout-btn' || 
-                (target.tagName === 'BUTTON' && target.textContent.trim() === 'Logout')) {
+            if (e.target.id === 'logout-btn' || e.target.closest('button')?.innerText === 'Logout') {
                 this.logout();
             }
         });
@@ -127,24 +64,14 @@ class SidebarManager {
     
     logout() {
         localStorage.removeItem('isLoggedIn');
-        const basePath = this.getBasePath();
-        window.location.href = basePath ? `${basePath}/index.html` : 'index.html';
+        window.location.href = '/AI_SCMS/index.html';
     }
     
     createFallbackSidebar() {
         const sidebarContainer = document.getElementById('sidebar-container');
         if (!sidebarContainer) return;
         
-        const currentPath = window.location.pathname;
-        const currentFile = currentPath.split('/').pop() || 'dashboard.html';
-        const basePath = this.getBasePath();
-        
-        // Create hrefs with correct base path
-        const dashboardHref = basePath ? `${basePath}/dashboard.html` : 'dashboard.html';
-        const inventoryHref = basePath ? `${basePath}/pages/inventory.html` : 'pages/inventory.html';
-        const procurementHref = basePath ? `${basePath}/pages/procurement.html` : 'pages/procurement.html';
-        const costHref = basePath ? `${basePath}/pages/cost-management.html` : 'pages/cost-management.html';
-        const orderHref = basePath ? `${basePath}/pages/order-management.html` : 'pages/order-management.html';
+        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
         
         sidebarContainer.innerHTML = `
             <div class="sidebar">
@@ -155,27 +82,27 @@ class SidebarManager {
                 
                 <ul class="sidebar-menu">
                     <li>
-                        <a href="${dashboardHref}" class="sidebar-link ${currentFile === 'dashboard.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/dashboard.html" class="sidebar-link ${currentPage === 'dashboard.html' ? 'active' : ''}">
                             <i>📊</i> Dashboard
                         </a>
                     </li>
                     <li>
-                        <a href="${inventoryHref}" class="sidebar-link ${currentFile === 'inventory.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/pages/inventory.html" class="sidebar-link ${currentPage === 'inventory.html' ? 'active' : ''}">
                             <i>📦</i> Inventory
                         </a>
                     </li>
                     <li>
-                        <a href="${procurementHref}" class="sidebar-link ${currentFile === 'procurement.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/pages/procurement.html" class="sidebar-link ${currentPage === 'procurement.html' ? 'active' : ''}">
                             <i>🛒</i> Procurement
                         </a>
                     </li>
                     <li>
-                        <a href="${costHref}" class="sidebar-link ${currentFile === 'cost-management.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/pages/cost-management.html" class="sidebar-link ${currentPage === 'cost-management.html' ? 'active' : ''}">
                             <i>💰</i> Cost Management
                         </a>
                     </li>
                     <li>
-                        <a href="${orderHref}" class="sidebar-link ${currentFile === 'order-management.html' ? 'active' : ''}">
+                        <a href="/AI_SCMS/pages/order-management.html" class="sidebar-link ${currentPage === 'order-management.html' ? 'active' : ''}">
                             <i>📋</i> Order Management
                         </a>
                     </li>
@@ -185,7 +112,7 @@ class SidebarManager {
                     <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">
                         <p style="font-size: 12px; opacity: 0.8;">Logged in as:</p>
                         <p style="font-weight: bold;" id="username-display">${localStorage.getItem('username') || 'Admin'}</p>
-                        <button onclick="window.logout()" style="width: 100%; margin-top: 10px; padding: 5px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 3px; cursor: pointer;">
+                        <button onclick="logout()" style="width: 100%; margin-top: 10px; padding: 5px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 3px; cursor: pointer;">
                             Logout
                         </button>
                     </div>
@@ -194,14 +121,6 @@ class SidebarManager {
         `;
     }
 }
-
-// Global logout function for fallback sidebar
-window.logout = function() {
-    localStorage.removeItem('isLoggedIn');
-    const path = window.location.pathname;
-    const basePath = path.includes('/AI_SCMS/') ? '/AI_SCMS' : '';
-    window.location.href = basePath ? `${basePath}/index.html` : 'index.html';
-};
 
 // Initialize sidebar when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
