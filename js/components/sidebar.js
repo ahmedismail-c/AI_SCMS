@@ -13,7 +13,7 @@ class SidebarManager {
         const sidebarContainer = document.getElementById('sidebar-container');
         if (!sidebarContainer) return;
         
-        fetch('/AI_SCMS/components/sidebar.html')
+        fetch('../components/sidebar.html')
             .then(response => response.text())
             .then(html => {
                 sidebarContainer.innerHTML = html;
