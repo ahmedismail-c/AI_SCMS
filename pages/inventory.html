@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Management - Supply Chain Management System</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="/AI_SCMS/css/style.css">
 </head>
 <body>
     <div class="container">
@@ -171,13 +171,13 @@
         </div>
     </div>
     
-    <script src="../js/utils/storage.js"></script>
-    <script src="../js/components/sidebar.js"></script>
+    <script src="/AI_SCMS/js/utils/storage.js"></script>
+    <script src="/AI_SCMS/js/components/sidebar.js"></script>
     <script>
         let currentInventory = [];
         
         // Load sidebar
-        fetch('../components/sidebar.html')
+        fetch('/AI_SCMS/components/sidebar.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('sidebar-container').innerHTML = data;
