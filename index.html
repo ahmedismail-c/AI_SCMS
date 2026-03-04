@@ -150,282 +150,77 @@
         </div>
     </div>
     
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Simple authentication (for demo purposes)
-            if (username === 'AhmedIsmail' && password === 'AhmedIsmail') {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('username', username);
-                window.location.href = 'dashboard.html';
-            } else {
-                alert('Invalid credentials! Use AhmedIsmail/AhmedIsmail');
-            }
-        });
-    </script>
-    <!-- Data Loading Script -->
+<!-- Simple Background Data Loading -->
 <script>
-    // Show loading overlay while loading data
-    function showLoadingOverlay() {
-        const overlay = document.createElement('div');
-        overlay.id = 'data-loading-overlay';
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s;
-        `;
+    // Load data in background after login
+    async function loadDataAfterLogin() {
+        console.log('Loading data in background...');
         
-        overlay.innerHTML = `
-            <div style="
-                background: white;
-                padding: 30px;
-                border-radius: 10px;
-                text-align: center;
-                max-width: 400px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            ">
-                <div style="font-size: 50px; margin-bottom: 20px;">🔄</div>
-                <h3 style="margin-bottom: 15px; color: #333;">Loading System Data</h3>
-                <p style="color: #666; margin-bottom: 20px;">Please wait while we prepare your Supply Chain Management System...</p>
-                <div style="
-                    width: 100%;
-                    height: 4px;
-                    background: #f0f0f0;
-                    border-radius: 2px;
-                    overflow: hidden;
-                ">
-                    <div id="loading-progress" style="
-                        width: 0%;
-                        height: 100%;
-                        background: linear-gradient(90deg, #3498db, #2ecc71);
-                        transition: width 0.3s;
-                    "></div>
-                </div>
-                <p id="loading-status" style="margin-top: 15px; font-size: 14px; color: #999;">Initializing...</p>
-            </div>
-        `;
+        const dataFiles = ['inventory', 'suppliers', 'procurement', 'orders', 'costs'];
         
-        document.body.appendChild(overlay);
-    }
-    
-    function updateLoadingProgress(percent, message) {
-        const progress = document.getElementById('loading-progress');
-        const status = document.getElementById('loading-status');
-        if (progress) progress.style.width = percent + '%';
-        if (status) status.textContent = message;
-    }
-    
-    function hideLoadingOverlay() {
-        const overlay = document.getElementById('data-loading-overlay');
-        if (overlay) {
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                if (overlay.parentNode) {
-                    overlay.parentNode.removeChild(overlay);
-                }
-            }, 500);
-        }
-    }
-    
-    // Load all data in background
-    async function loadAllDataInBackground() {
-        showLoadingOverlay();
-        
-        try {
-            // Check if Storage object exists
-            if (typeof Storage === 'undefined') {
-                console.error('Storage not loaded');
-                updateLoadingProgress(30, 'Loading storage module...');
-                await loadScript('js/utils/storage.js');
-            }
-            
-            updateLoadingProgress(30, 'Loading inventory data...');
-            await loadDataFile('inventory');
-            
-            updateLoadingProgress(50, 'Loading supplier data...');
-            await loadDataFile('suppliers');
-            
-            updateLoadingProgress(70, 'Loading procurement data...');
-            await loadDataFile('procurement');
-            
-            updateLoadingProgress(85, 'Loading order data...');
-            await loadDataFile('orders');
-            
-            updateLoadingProgress(95, 'Loading cost data...');
-            await loadDataFile('costs');
-            
-            updateLoadingProgress(100, 'System ready!');
-            
-            // Small delay to show 100%
-            setTimeout(() => {
-                hideLoadingOverlay();
-            }, 500);
-            
-        } catch (error) {
-            console.error('Error loading data:', error);
-            updateLoadingProgress(100, 'Error loading data. Using defaults.');
-            setTimeout(() => {
-                hideLoadingOverlay();
-            }, 2000);
-        }
-    }
-    
-    // Load script dynamically
-    function loadScript(src) {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    }
-    
-    // Load data file and store in localStorage
-    async function loadDataFile(filename) {
-        return new Promise(async (resolve, reject) => {
+        for (const file of dataFiles) {
             try {
                 // Try multiple paths
                 const paths = [
-                    `data/${filename}.json`,
-                    `./data/${filename}.json`,
-                    `/data/${filename}.json`,
-                    `/AI_SCMS/data/${filename}.json`
+                    `data/${file}.json`,
+                    `./data/${file}.json`,
+                    `/data/${file}.json`,
+                    `/AI_SCMS/data/${file}.json`
                 ];
-                
-                let data = null;
                 
                 for (const path of paths) {
                     try {
                         const response = await fetch(path);
                         if (response.ok) {
-                            data = await response.json();
-                            console.log(`✅ Loaded ${filename} from:`, path);
+                            const data = await response.json();
+                            
+                            // Handle different JSON structures
+                            if (Array.isArray(data)) {
+                                localStorage.setItem(file, JSON.stringify(data));
+                            } else if (data[file]) {
+                                localStorage.setItem(file, JSON.stringify(data[file]));
+                            }
+                            
+                            console.log(`✅ Loaded ${file}`);
                             break;
                         }
                     } catch (e) {
-                        // Continue to next path
+                        // Try next path
                     }
                 }
-                
-                if (data) {
-                    // Handle different JSON structures
-                    if (Array.isArray(data)) {
-                        localStorage.setItem(filename, JSON.stringify(data));
-                    } else if (data[filename]) {
-                        localStorage.setItem(filename, JSON.stringify(data[filename]));
-                    } else {
-                        // Try to find any array in the data
-                        const firstKey = Object.keys(data)[0];
-                        if (firstKey && Array.isArray(data[firstKey])) {
-                            localStorage.setItem(filename, JSON.stringify(data[firstKey]));
-                        } else {
-                            localStorage.setItem(filename, JSON.stringify([]));
-                        }
-                    }
-                } else {
-                    console.warn(`No data found for ${filename}, using empty array`);
-                    localStorage.setItem(filename, JSON.stringify([]));
-                }
-                
-                resolve();
             } catch (error) {
-                console.error(`Error loading ${filename}:`, error);
-                localStorage.setItem(filename, JSON.stringify([]));
-                resolve(); // Resolve anyway to continue loading
-            }
-        });
-    }
-    
-    // Check if data needs to be loaded
-    function needsDataLoad() {
-        const dataTypes = ['inventory', 'suppliers', 'procurement', 'orders', 'costs'];
-        let hasData = false;
-        
-        for (const type of dataTypes) {
-            if (localStorage.getItem(type)) {
-                hasData = true;
-                break;
+                console.error(`Error loading ${file}:`, error);
             }
         }
         
-        return !hasData;
+        console.log('✅ All data loaded');
     }
     
-    // Modify login form submission
+    // Modify login form
     document.addEventListener('DOMContentLoaded', function() {
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
-            const originalSubmit = loginForm.onsubmit;
-            
             loginForm.onsubmit = async function(e) {
                 e.preventDefault();
                 
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
                 
-                // Simple authentication
                 if (username === 'AhmedIsmail' && password === 'AhmedIsmail') {
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('username', username);
                     
-                    // Check if data needs to be loaded
-                    if (needsDataLoad()) {
-                        await loadAllDataInBackground();
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        // Data already exists, just redirect
-                        window.location.href = 'dashboard.html';
-                    }
+                    // Start loading data in background
+                    loadDataAfterLogin();
+                    
+                    // Redirect immediately
+                    window.location.href = 'dashboard.html';
                 } else {
                     alert('Invalid credentials! Use AhmedIsmail/AhmedIsmail');
                 }
             };
         }
     });
-    
-    // Preload data in background even before login
-    window.addEventListener('load', function() {
-        // Silently preload data in background without showing overlay
-        if (needsDataLoad()) {
-            console.log('Preloading data in background...');
-            // Load data silently without showing overlay
-            Promise.all([
-                loadDataFile('inventory'),
-                loadDataFile('suppliers'),
-                loadDataFile('procurement'),
-                loadDataFile('orders'),
-                loadDataFile('costs')
-            ]).then(() => {
-                console.log('✅ All data preloaded successfully');
-            }).catch(error => {
-                console.error('Error preloading data:', error);
-            });
-        }
-    });
 </script>
-
-<!-- Add loading animation styles -->
-<style>
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    .loading-spinner {
-        animation: spin 1s linear infinite;
-    }
-</style>
 </body>
 </html>
