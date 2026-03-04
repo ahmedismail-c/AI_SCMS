@@ -9,23 +9,30 @@ class SidebarManager {
         this.setupLogout();
     }
     
-    loadSidebar() {
-        const sidebarContainer = document.getElementById('sidebar-container');
-        if (!sidebarContainer) return;
-        
-        fetch('AI_SCMS/components/sidebar.html')
-            .then(response => response.text())
-            .then(html => {
-                sidebarContainer.innerHTML = html;
-                this.setActiveLink();
-                this.setUsername();
-            })
-            .catch(error => {
-                console.error('Error loading sidebar:', error);
-                // Fallback sidebar if fetch fails
-                this.createFallbackSidebar();
-            });
-    }
+loadSidebar() {
+    const sidebarContainer = document.getElementById('sidebar-container');
+    if (!sidebarContainer) return;
+
+    // 1. Determine if we are on GitHub Pages or Local
+    const isGitHub = window.location.hostname.includes('github.io');
+    const pathPrefix = isGitHub ? '/AI_SCMS' : '';
+
+    // 2. Fetch using the absolute path from the domain root
+    fetch(`${pathPrefix}/components/sidebar.html`)
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.text();
+        })
+        .then(html => {
+            sidebarContainer.innerHTML = html;
+            this.setActiveLink();
+            this.setUsername();
+        })
+        .catch(error => {
+            console.error('Error loading sidebar:', error);
+            this.createFallbackSidebar();
+        });
+}
     
     setActiveLink() {
         // Get current page filename
